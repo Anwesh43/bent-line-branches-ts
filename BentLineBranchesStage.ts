@@ -220,3 +220,25 @@ class BentLineBranches {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    blb : BentLineBranches = new BentLineBranches()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.blb.draw(context)
+    }
+
+    hanleTap(cb : Function) {
+        this.blb.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.blb.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
