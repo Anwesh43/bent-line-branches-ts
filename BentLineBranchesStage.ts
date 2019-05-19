@@ -9,7 +9,7 @@ const backColor : string = "#BDBDBD"
 const nodes : number = 5
 const parts : number = 2
 const lines : number = 2
-const lineFactor : number = 0.66
+const lineFactor : number = 0.5
 
 class ScaleUtil {
 
@@ -45,17 +45,19 @@ class DrawingUtil {
     }
 
     static drawBentLineBranches(context : CanvasRenderingContext2D, i : number, sc1 : number, sc2 : number, size : number) {
-        const y : number = size * lineFactor
-        const l : number = size - y
+        const offsetY : number = size * lineFactor
+        const l : number = size - offsetY
+        const y : number = size
+        const sj : number = 1 - 2 * i
         const sc1i : number = ScaleUtil.divideScale(sc1, i, parts)
         const sc2i : number = ScaleUtil.divideScale(sc2, i, parts)
         context.save()
         context.rotate(Math.PI / 2 * i)
-        DrawingUtil.drawLine(context, -size, 2 * size / 3, size, size)
+        DrawingUtil.drawLine(context, -size, y, size, y)
         for (var j = 0; j < lines; j++) {
             const sf : number = 1 - 2 * j
             context.save()
-            context.translate(size, y)
+            context.translate(size * sj, y)
             context.rotate(sf * Math.PI / 4 * ScaleUtil.divideScale(sc2i, j, lines))
             DrawingUtil.drawLine(context, 0, 0, 0, l * sc1i)
             context.restore()
@@ -73,7 +75,9 @@ class DrawingUtil {
         context.strokeStyle = foreColor
         context.save()
         context.translate(w / 2, gap * (i + 1))
-        DrawingUtil.drawBentLineBranches(context, i, sc1, sc2, size)
+        for (var j = 0; j < parts; j++) {
+            DrawingUtil.drawBentLineBranches(context, j, sc1, sc2, size)
+        }
         context.restore()
     }
 }
